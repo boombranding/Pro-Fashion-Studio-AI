@@ -439,7 +439,8 @@ export const generateFashionImage = async (
 
         COMPOSITION:
         - Framing: ${framingInstruction}
-        - Pose: ${selectedPose.title}
+        - Pose Name: ${selectedPose.title}
+        - POSE DESCRIPTION (STRICTLY FOLLOW THIS): ${selectedPose.description}
 
         LIGHTING & INTEGRATION (CRITICAL):
         - LIGHTING MATCH: Analyze the background's light source (direction, temperature, softness) and apply the EXACT same lighting to the model's face and body.

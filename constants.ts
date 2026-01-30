@@ -40,148 +40,147 @@ export const FIXED_CAMERA_SETTINGS = {
 };
 
 export const SHOT_TYPE_OPTIONS = [
-  { 
-    type: ShotType.FULL_BODY, 
-    label: 'Full Body', 
+  {
+    type: ShotType.FULL_BODY,
+    label: 'Full Body',
     description: 'Head to toe',
-    url: "data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' fill='none'%3E%3Ccircle cx='50' cy='24' r='8' fill='%231f2937'/%3E%3Cpath d='M50 36 C 36 36, 28 42, 28 52 V 62 H 36 V 90 H 46 V 66 H 54 V 90 H 64 V 62 H 72 V 52 C 72 42, 64 36, 50 36 Z' fill='%231f2937'/%3E%3Cpath d='M20 30 V 20 H 30 M80 30 V 20 H 70 M20 70 V 80 H 30 M80 70 V 80 H 70' stroke='%231f2937' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"
+    url: "/shot-types/full-body.jpg"
   },
-  { 
-    type: ShotType.UPPER_BODY, 
-    label: 'Upper Body', 
+  {
+    type: ShotType.UPPER_BODY,
+    label: 'Upper Body',
     description: 'Waist up',
-    url: "data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' fill='none'%3E%3Ccircle cx='50' cy='24' r='8' fill='%231f2937'/%3E%3Cpath d='M50 36 C 36 36, 28 42, 28 52 V 62 H 36 V 66 H 64 V 62 H 72 V 52 C 72 42, 64 36, 50 36 Z' fill='%231f2937'/%3E%3Cpath d='M36 68 V 90 H 46 V 68 H 54 V 90 H 64 V 68' fill='%23E5E7EB'/%3E%3Cpath d='M20 25 V 15 H 30 M80 25 V 15 H 70 M20 55 V 65 H 30 M80 55 V 65 H 70' stroke='%231f2937' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"
+    url: "/shot-types/upper-body.jpg"
   },
-  { 
-    type: ShotType.LOWER_BODY, 
-    label: 'Lower Body', 
+  {
+    type: ShotType.LOWER_BODY,
+    label: 'Lower Body',
     description: 'Waist down',
-    url: "data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' fill='none'%3E%3Ccircle cx='50' cy='24' r='8' fill='%23E5E7EB'/%3E%3Cpath d='M50 36 C 36 36, 28 42, 28 52 V 62 H 36 V 66 H 64 V 62 H 72 V 52 C 72 42, 64 36, 50 36 Z' fill='%23E5E7EB'/%3E%3Cpath d='M36 66 V 90 H 46 V 66 H 54 V 90 H 64 V 66' fill='%231f2937'/%3E%3Cpath d='M25 60 V 50 H 35 M75 60 V 50 H 65 M25 90 V 100 H 35 M75 90 V 100 H 65' stroke='%231f2937' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"
+    url: "/shot-types/lower-body.jpg"
   },
 ];
 
 export const POSES: Pose[] = [
   {
-    id: 'A1', category: 'A', title: 'Classic Weight Shift',
-    description: 'Model stands facing forward, weight shifted to the right leg, right hip slightly out. Left leg relaxed with knee slightly bent.',
-    usage: 'Universal pose. Best for showcasing long coats, dresses, or general silhouettes.',
-    url: 'https://picsum.photos/400/600?random=101&grayscale' 
+    id: 'A1', category: 'A', title: 'The Classic Contrapposto',
+    description: 'Model stands facing forward, weight fully on the right leg, right hip slightly pushed out. Left leg relaxed, knee slightly bent, toe lightly touching the ground. Both arms hang naturally at the sides, shoulders relaxed and thrown back.',
+    usage: 'Universal pose. Best for showcasing the natural drape and silhouette of long coats, dresses, or suits.',
+    url: '/poses/a1.jpg'
   },
   {
-    id: 'A2', category: 'A', title: 'Mid-Walk Frame',
-    description: 'Capturing a step in motion. Right leg forward, heel touching ground, left leg behind on toes.',
-    usage: 'Displays pants fit, dress movement, and natural jacket folds during motion.',
-    url: 'https://picsum.photos/400/600?random=102&grayscale'
+    id: 'A2', category: 'A', title: 'Mid-Stride Walking',
+    description: 'Capturing a walking moment. Right leg takes a large step forward, heel touching ground, leg straight; Left leg behind, toe pushing off, knee bent. Body weight on the front foot. Arms swing naturally (Left arm forward, Right arm back).',
+    usage: 'Showcasing pants fit, skirt flow/draping, and dynamic folds of jackets in motion.',
+    url: '/poses/a2.jpg'
   },
   {
-    id: 'A3', category: 'A', title: 'Over-the-Shoulder Back View',
-    description: 'Model stands back to camera, head turned 45 degrees back. Right shoulder dropped slightly.',
-    usage: 'Specifically for back designs, prints, or jacket rear construction.',
+    id: 'A3', category: 'A', title: 'The Over-the-Shoulder Back View',
+    description: 'Model stands with back to camera. Head turned to the back right (even if no face, head angle must turn). Right shoulder slightly dropped, left hand hangs naturally, right hand lightly rests on the right waist.',
+    usage: 'Specifically for showcasing back designs, back prints, or jacket rear cuts.',
     url: 'https://picsum.photos/400/600?random=103&grayscale'
   },
   {
-    id: 'A4', category: 'A', title: 'Three-Quarter Side Pose',
-    description: 'Body rotated 45 degrees from lens. Weight on back leg, front leg crossed slightly.',
-    usage: 'Slimming angle that highlights side seams and layering textures.',
+    id: 'A4', category: 'A', title: 'The 3/4 Turn',
+    description: 'Body rotated about 45 degrees relative to the camera. Weight on the back leg, front leg slightly crossed in front of the back leg. The arm facing the camera hangs naturally, the other hand can be lightly placed behind the back.',
+    usage: 'Very slimming angle, excellent for showing side lines and layering hierarchy.',
     url: 'https://picsum.photos/400/600?random=104&grayscale'
   },
   {
-    id: 'A5', category: 'A', title: 'One Hand in Pocket',
-    description: 'Facing forward or slightly side. One hand casually tucked into pocket.',
-    usage: 'Shows off pocket details, casual outerwear vibe, and waistline placement.',
+    id: 'A5', category: 'A', title: 'One Hand in Pocket Casual',
+    description: 'Standing frontally or slightly to the side. Weight shifted to one side. One hand heavily casually tucked into trousers or jacket pocket, thumb exposed. The other arm relaxed naturally.',
+    usage: 'Showcasing trousers pocket design, jacket casualness, while emphasizing the waistline position.',
     url: 'https://picsum.photos/400/600?random=105&grayscale'
   },
   {
-    id: 'A6', category: 'A', title: 'Arms Crossed',
-    description: 'Steady stance, shoulders square. Arms relaxed across the chest.',
-    usage: 'Focuses attention on chest and sleeve details, knit textures, or patterns.',
+    id: 'A6', category: 'A', title: 'Arms Crossed Texture Focus',
+    description: 'Stable stance, feet shoulder-width apart. Arms crossed loosely in front of chest (do not hug too tight to avoid hiding too much cloth). Head tilted slightly.',
+    usage: 'Focuses visual attention on the chest and sleeves, suitable for showing knitwear texture, cuff details, or top patterns.',
     url: 'https://picsum.photos/400/600?random=106&grayscale'
   },
   {
-    id: 'A7', category: 'A', title: 'Elegant Crossed-Leg Sit',
-    description: 'Model sitting on a studio stool. Back straight, right leg crossed over left knee.',
-    usage: 'Shows dress length when seated or how pants drape over knees and footwear.',
+    id: 'A7', category: 'A', title: 'The Elegant Seated Pose',
+    description: 'Model seated on a sleek GUNDE-style folding chair. Back straight, right leg elegantly crossed over left knee. Hands lightly folded on thighs.',
+    usage: 'Showcasing skirt length and sitting effect, or knee lines of pants and shoe coordination when seated.',
     url: 'https://picsum.photos/400/600?random=107&grayscale'
   },
   {
-    id: 'A8', category: 'A', title: 'Touching Collar/Cuff',
-    description: 'Standing pose, one hand raised to lightly touch the collar or lapel edge.',
-    usage: 'Directs viewer focus to specific craftsmanship details (buttons, lapels, material).',
+    id: 'A8', category: 'A', title: 'The Detail Touch',
+    description: 'Standing base, one hand raised to lightly touch the opposite collar, lapel edge, or adjusting the other hands cuff. Movement should be gentle, like a frozen moment.',
+    usage: 'Forces viewer gaze to specific craftsmanship details (collar shape, cufflinks, material).',
     url: 'https://picsum.photos/400/600?random=108&grayscale'
   },
   {
-    id: 'A9', category: 'A', title: 'Power A-Stance',
-    description: 'Feet planted wider than shoulders. Arms natural at sides.',
-    usage: 'Ideal for street wear, oversized pants, or high-volume jackets to show presence.',
+    id: 'A9', category: 'A', title: 'The Strong A-Stance',
+    description: 'Feet placed slightly wider than shoulders, standing firmly on the ground, legs straight. Hands hang naturally at sides. Body straight and powerful.',
+    usage: 'Suitable for street wear, loose fit pants, or voluminous jackets to show presence/aura.',
     url: 'https://picsum.photos/400/600?random=109&grayscale'
   },
   {
-    id: 'A10', category: 'A', title: 'Leaning Against Wall',
-    description: 'One shoulder and back leaning lightly against a wall surface. One leg bent.',
-    usage: 'Creates a casual, lifestyle vibe allowing clothes to stack and fold naturally.',
+    id: 'A10', category: 'A', title: 'The Wall Lean',
+    description: 'Model leans lightly with one shoulder and back against an invisible wall. The leaning leg bends slightly to support body, outer leg stretches straight and crosses in front. Outer arm hangs naturally, leaning arm can bend slightly.',
+    usage: 'Creates a casual, lazy fashion feel, allowing clothes to stack folds naturally, appearing more lifestyle-oriented.',
     url: 'https://picsum.photos/400/600?random=110&grayscale'
   },
   {
-    id: 'A11', category: 'A', title: 'Hands on Hips',
-    description: 'Feet shoulder-width apart. Both hands on waist, elbows out.',
-    usage: 'Emphasizes waistline and belts, projecting a strong, confident editorial look.',
+    id: 'A11', category: 'A', title: 'Double Hands on Hips Power',
+    description: 'Feet shoulder-width apart, standing firmly. Both hands on waist sides, elbows flaring out. Torso remains straight and confident.',
+    usage: 'Emphasizes waistline and belt accessories, and displays a confident, strong aura. Suitable for suits or workwear.',
     url: 'https://picsum.photos/400/600?random=111&grayscale'
   },
   {
-    id: 'A12', category: 'A', title: 'High Stool Perch',
-    description: 'Model sitting on the edge of a high stool. One leg straight, one leg bent.',
-    usage: 'Lighter, more dynamic seated pose than a full chair sit.',
+    id: 'A12', category: 'A', title: 'The High Stool Perch',
+    description: 'Model is not fully seated, but perching on the edge of a high Hee bar stool. One leg straight with toe touching ground, the other leg slightly bent resting on the chair bar. Hands casually on thigh.',
+    usage: 'Creates a lighter, more dynamic atmosphere than a full sit. Good for showing trouser leg drape and shoes.',
     url: 'https://picsum.photos/400/600?random=112&grayscale'
   },
   {
-    id: 'A13', category: 'A', title: 'Jacket Over Shoulder',
-    description: 'Mid-walk frame. One hand hooked back holding a jacket over the shoulder.',
-    usage: 'Perfect for layering shots, showing off inner garments alongside outerwear.',
+    id: 'A13', category: 'A', title: 'The Jacket Sling Stride',
+    description: 'In a mid-stride walking state. One hand is bent back hooking a jacket casually over the same shoulder. The other hand swings naturally.',
+    usage: 'Showcasing layered styling, especially the combination of inner wear vs outer jacket.',
     url: 'https://picsum.photos/400/600?random=113&grayscale'
   },
   {
-    id: 'A14', category: 'A', title: 'Looking Up Extension',
-    description: 'Legs crossed tightly while standing. Torso leaning back slightly. One hand raised.',
-    usage: 'Shows suit structure and slim-fit trouser lines.',
+    id: 'A14', category: 'A', title: 'Upward Stretched Crossed Stance',
+    description: 'Legs tightly crossed (scissor legs). Torso leans back slightly and extends to one side. Right hand raised high above head, palm hovering in front of face; Left arm hangs naturally. Head tilted back significanty, gazing upward.',
+    usage: 'Showcasing suit structural sense, slim straight trouser fit, and high-fashion coolness.',
     url: 'https://picsum.photos/400/600?random=114&grayscale'
   },
   {
-    id: 'A15', category: 'A', title: 'Street Movement Frame',
-    description: 'Cross-step standing pose. Upper body twisted with arms wide.',
-    usage: 'Captures the "cool" factor of modern street fashion.',
+    id: 'A15', category: 'A', title: 'The Street Groove Freeze',
+    description: 'Legs in a Cross-step stance, weight shifting flexibly. Upper body twists slightly, Right hand raised above head, Left hand extended horizontally to side. Head turned to left, eyes looking down.',
+    usage: 'Perfect for Streetwears casual coolness. Suitable for showing loose fit of Hoodies and sweatpants.',
     url: 'https://picsum.photos/400/600?random=115&grayscale'
   },
   {
-    id: 'A16', category: 'A', title: 'Striding Forward',
-    description: 'Direct stride toward lens. Hands in pockets pushing jacket open.',
-    usage: 'Powerful editorial look showing inner garment and coat structure.',
+    id: 'A16', category: 'A', title: 'The Head-On Power Stride',
+    description: 'Capturing the dynamic moment of walking straight towards the lens. Weight on the back foot, front heel just touching the ground, toe slightly turned up. Hands in trouser pockets, exhibiting a momentum of walking against the wind. Head straight, eyes looking firmly at the lens.',
+    usage: 'Showing strong confident aura. Presents internal structure of jackets and layered wear.',
     url: 'https://picsum.photos/400/600?random=116&grayscale'
   },
   {
-    id: 'A17', category: 'A', title: 'Floor Lounge Sit',
-    description: 'Model sitting casually on the floor. One leg extended, one leg tucked.',
-    usage: 'Conveys a relaxed, high-fashion loungewear attitude.',
+    id: 'A17', category: 'A', title: 'The Luxe Floor Lounge',
+    description: 'Sitting casually on floor. One leg extended forward, other leg bent at knee. Upper body leans back, one hand behind supporting body on ground, other arm resting on bent knee.',
+    usage: 'Conveying a lazy, luxurious casual attitude. Suitable for premium knitwear or comfort fit pants.',
     url: 'https://picsum.photos/400/600?random=117&grayscale'
   },
   {
-    id: 'A18', category: 'A', title: 'Light Toe Bounce',
-    description: 'Capturing a moment of weightlessness on toes. Knees slightly together.',
-    usage: 'Shows flexibility and comfort of casual athletic wear.',
+    id: 'A18', category: 'A', title: 'The Joyful Suspension',
+    description: 'Both toes lightly tap the ground, floating feel. Knees naturally bent together, body weight sinking in Z shape. Arms spread to sides (Left high Right low). Head lowered, looking at feet, with a smile.',
+    usage: 'Excellent for showing Mobility and comfort. Highlights stretch of bottom fabrics.',
     url: 'https://picsum.photos/400/600?random=118&grayscale'
   },
   {
-    id: 'A19', category: 'A', title: 'Jump Stride',
-    description: 'Vertical jump at peak height. One knee raised parallel to ground.',
-    usage: 'Showcases suit tailoring and movement range.',
+    id: 'A19', category: 'A', title: 'Mid-Air Stride Suspension',
+    description: 'Vertical jump at peak. Upper body straight, frontal. Right leg lifted high, thigh parallel to ground, knee bent 90 degrees and rotated inward; Left leg vertical downwards, toe pointed down.',
+    usage: 'Showing suit activity space in large movements and dynamic tie movement.',
     url: 'https://picsum.photos/400/600?random=119&grayscale'
   },
   {
-    id: 'A20', category: 'A', title: 'Side Kick Movement',
-    description: 'Light jump with one foot landing. One leg kicked back sharply.',
-    usage: 'Demonstrates drape of pleated trousers or wide-leg pants in motion.',
+    id: 'A20', category: 'A', title: 'Dynamic Back-Kick Leap',
+    description: 'Front visible to camera. Right foot toe supports weight; Left foot kicks back significantly, calf folded backwards and upwards. Upper body straight. Right hand bent in front to clavicle, Left hand extends back.',
+    usage: 'Focus on showing drape of Pleated Trousers in motion. NO SIDE PROFILE.',
     url: 'https://picsum.photos/400/600?random=120&grayscale'
   },
-
   {
     id: 'B1', category: 'B', title: 'Neckline Detail',
     description: 'Macro shot focusing on collar construction and stitching.',
@@ -243,7 +242,7 @@ export const BUILT_IN_MODELS = [
   { id: 'f8', gender: 'Female', label: 'East Asian Female (Bob Cut)', url: 'https://picsum.photos/400/600?random=308' },
   { id: 'f9', gender: 'Female', label: 'Black Female (Braids)', url: 'https://picsum.photos/400/600?random=309' },
   { id: 'f10', gender: 'Female', label: 'Senior Caucasian Female', url: 'https://picsum.photos/400/600?random=310' },
-  { id: 'm1', gender: 'Male', label: 'Caucasian Male (Stubble)', url: 'https://picsum.photos/400/600?random=311' },
+  { id: 'm1', gender: 'Male', label: 'Caucasian Male (Stubble)', url: '/models/m1.jpg' },
   { id: 'm2', gender: 'Male', label: 'Asian Male (Clean Shaven)', url: 'https://picsum.photos/400/600?random=312' },
   { id: 'm3', gender: 'Male', label: 'Black Male (Fade Cut)', url: 'https://picsum.photos/400/600?random=313' },
   { id: 'm4', gender: 'Male', label: 'Latino Male', url: 'https://picsum.photos/400/600?random=314' },
