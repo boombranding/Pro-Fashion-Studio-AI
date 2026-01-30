@@ -21,7 +21,7 @@ export const ShotTypeSelector: React.FC<ShotTypeSelectorProps> = ({ selectedType
           >
             {/* Image Container */}
             <div
-              className={`w-full aspect-square relative rounded-xl border-2 overflow-hidden bg-gray-50 transition-all duration-300 
+              className={`w-full aspect-[2/3] relative rounded-xl border-2 overflow-hidden bg-gray-50 transition-all duration-300 
               ${isSelected
                   ? 'border-blue-600 ring-4 ring-blue-50 shadow-md'
                   : 'border-gray-200 hover:border-blue-300 hover:shadow-sm'
