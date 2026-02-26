@@ -10,7 +10,7 @@ import { Gallery } from './components/Gallery';
 import { GenerationLoader } from './components/GenerationLoader';
 import { POSES } from './constants';
 import { AppState, ShotType, ValidationResult, GeneratedResult, GalleryItem, Project } from './types';
-import { generateFashionImage } from './services/geminiService';
+import { generateFashionImage, getBatchDescriptions } from './services/geminiService';
 import { saveToGallery, getGalleryItems, deleteGalleryItem, saveProject, deleteProject } from './services/storageService';
 
 const App: React.FC = () => {
@@ -104,43 +104,79 @@ const App: React.FC = () => {
         // This ensures that even if the AI hallucinates details, it tries to stick to this selected "theme".
 
         const jewelryOptions = [
-            "Minimalist Silver Jewelry (Thin bracelet, small stud earrings)",
-            "Elegant Gold Jewelry (Gold watch, hoop earrings)",
-            "Rose Gold Accessories",
-            "No Jewelry / Clean Look"
+            "Minimalist Silver Jewelry (Thin silver bracelet on right wrist, small silver stud earrings)",
+            "Elegant Gold Jewelry (Gold watch on left wrist, medium gold hoop earrings)",
+            "Rose Gold Accessories (Rose gold sleek ring on right index finger, delicate chain necklace)",
+            "Clean Look - Absolutely No Jewelry"
         ];
         const shoeOptions = [
-            "Neutral Beige/Nude Heels or Flats",
-            "Classic Black Footwear",
-            "Clean White Minimalist Shoes",
-            "Metallic Silver Shoes"
+            "Neutral Beige Suede Pointed-toe Heels",
+            "Classic Black Leather Stiletto Pumps",
+            "Clean White Minimalist Leather Sneakers",
+            "Black Leather Loafers with Silver Snaffle",
+            "Metallic Silver Ankle-Strap Sandals"
         ];
         const bagOptions = [
-            "Matching Leather Clutch",
-            "Minimalist Chain Bag",
-            "Structured Tote Bag",
-            "No Handbag"
+            "Matching Leather Envelope Clutch",
+            "Minimalist Silver Chain Crossbody Bag",
+            "Structured Black Leather Mini Tote",
+            "No Handbag at all"
         ];
 
-        const pick = (arr: string[]) => arr[Math.floor(Math.random() * arr.length)];
+        const { modelDesc, garmentDesc, hasShoes, garmentCategory } = await getBatchDescriptions(configSnapshot);
 
-        // Randomly select ONE style for the whole batch
+        const pick = (arr: string[]) => arr[Math.floor(Math.random() * arr.length)];
+        const jewelry = pick(jewelryOptions);
+
+        let shoes = "";
+        if (hasShoes) {
+            shoes = "照片中原有的鞋款 (The EXACT shoes from the GARMENT REFERENCE IMAGE)";
+        } else {
+            if (garmentCategory === "skirt_dress") {
+                shoes = "優雅的細跟高跟鞋 (Elegant stiletto heels)";
+            } else if (garmentCategory === "pants") {
+                shoes = "經典包鞋 (Classic closed-toe formal shoes)";
+            } else if (garmentCategory === "shorts") {
+                shoes = pick(["休閒小白鞋 (Casual white sneakers)", "時尚涼拖鞋 (Fashionable slippers/sandals)"]);
+            } else {
+                shoes = pick(shoeOptions);
+            }
+        }
+
+        const bag = pick(bagOptions);
+        const seedId = Math.floor(Math.random() * 90000) + 10000;
+
+        // Randomly select ONE highly specific style for the whole batch
+        // We use specific terms to prevent the AI from varying the interpretation of "jewelry" or "shoes".
         const consistencyProfile = `
-    UNIFORM BATCH STYLE GUIDE:
-    - JEWELRY/ACCESSORIES: ${pick(jewelryOptions)}. Ensure all shots in this batch use this specific style.
-    - SHOES (If not overridden by Skirt Logic): ${pick(shoeOptions)}.
-    - HANDBAG (Optional): ${pick(bagOptions)}.
-    - IMPORTANT: If the user did not upload these items, YOU MUST GENERATE THEM CONSISTENTLY across all images.
+    CRITICAL BATCH CONSISTENCY RULES - SEED #${seedId}:
+    The goal is to render the EXACT SAME MODEL, wearing the EXACT SAME styling across different poses.
+    YOU MUST OBEY THE FOLLOWING IDENTICAL SETTINGS FOR EVERY IMAGE:
+    
+    1. EXPLICIT ACCESSORIES (Do not deviate):
+       - JEWELRY: ${jewelry}.
+       - SHOES (If feet are visible): ${shoes}.
+       - HANDBAG (If hands/pose allow): ${bag}.
+    
+    2. UNPROVIDED GARMENTS (CRITICAL USER RULE):
+       - If ONLY a Top (shirt, jacket, etc) was uploaded: You MUST pair it with Plain Black Tailored Trousers and the ${shoes}.
+       - If ONLY Bottoms (pants, skirt) were uploaded: You MUST pair it with a Plain White Crisp Button-up Shirt or T-Shirt and the ${shoes}.
+    
+    3. HAIR & MAKEUP:
+       - Natural clean makeup look.
+       - Hair MUST MATCH EXACTLY the MODEL REFERENCE IMAGE. Do not change hairstyle or hair length.
+    
+    FAILURE TO USE THESE EXACT ITEMS ACROSS MULTIPLE POSES IS A FAILURE. Do not invent new earrings, rings, or shoes.
     `;
 
-        processGenerationQueue(projectId, initialResults, configSnapshot, consistencyProfile);
+        processGenerationQueue(projectId, initialResults, configSnapshot, consistencyProfile, garmentDesc, modelDesc);
     };
 
-    const processGenerationQueue = async (projectId: string, initialResults: GeneratedResult[], config: AppState, consistencyPrompt: string) => {
+    const processGenerationQueue = async (projectId: string, initialResults: GeneratedResult[], config: AppState, consistencyPrompt: string, garmentDesc: string, modelDesc: string) => {
         let currentResults = [...initialResults];
         const promises = config.selectedPoseIds.map(async (poseId) => {
             try {
-                const imageUrl = await generateFashionImage(poseId, config, consistencyPrompt);
+                const imageUrl = await generateFashionImage(poseId, config, consistencyPrompt, garmentDesc, modelDesc);
                 const galleryItem: GalleryItem = { id: crypto.randomUUID(), projectId, poseId, imageUrl, timestamp: Date.now() };
                 await saveToGallery(galleryItem);
                 currentResults = currentResults.map(r => r.poseId === poseId ? { ...r, loading: false, imageUrl } : r);

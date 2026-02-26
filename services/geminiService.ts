@@ -347,10 +347,89 @@ const verifyModelIdentity = async (
   }
 };
 
+export const extractBatchDescriptions = async (
+  apiKey: string,
+  modelData: { mimeType: string, data: string } | null,
+  garmentParts: { inlineData: { mimeType: string, data: string } }[]
+): Promise<{ modelDesc: string; garmentDesc: string; hasShoes: boolean; garmentCategory: string }> => {
+  const ai = new GoogleGenAI({ apiKey });
+
+  try {
+    const parts: any[] = [
+      {
+        text: `分析這些圖片。請使用繁體中文回覆。
+        1. 如果有模特兒圖片，請精確描述其面部特徵、髮型、髮色以及膚色。
+        2. 以極度考究的細節描述服裝：精確的剪裁、輪廓、長度、領型、袖子、布料紋理、物理細節（鈕扣、腰帶、口袋、拉鍊、繫帶），以及極度具體的圖案（例如：'帶有黑色細直條紋的白色洋裝'）。
+        3. 判斷上傳的服裝圖片中是否已經包含鞋子 (hasShoes)。
+        4. 分類服裝的類型 (garmentCategory)，僅限以下四種：'skirt_dress' (裙裝/洋裝), 'pants' (長褲), 'shorts' (短褲), 'other' (其他/上衣)。
+        
+        回傳如下格式的 JSON：{
+            "modelDesc": "模特兒物理特徵的具體描述",
+            "garmentDesc": "對服裝工程級別的超詳細描述",
+            "hasShoes": boolean,
+            "garmentCategory": "skirt_dress" | "pants" | "shorts" | "other"
+        }`
+      }
+    ];
+    if (modelData) {
+      parts.push({ inlineData: modelData });
+    }
+    parts.push(...garmentParts);
+
+    const response = await ai.models.generateContent({
+      model: 'gemini-3-flash-preview',
+      contents: { parts },
+      config: {
+        responseMimeType: "application/json",
+        responseSchema: {
+          type: Type.OBJECT,
+          properties: {
+            modelDesc: { type: Type.STRING },
+            garmentDesc: { type: Type.STRING },
+            hasShoes: { type: Type.BOOLEAN },
+            garmentCategory: { type: Type.STRING }
+          }
+        }
+      }
+    });
+
+    if (response.text) return JSON.parse(response.text);
+  } catch (err) {
+    console.warn("Failed to extract descriptions", err);
+  }
+  return { modelDesc: "", garmentDesc: "", hasShoes: false, garmentCategory: "other" };
+};
+
+export const getBatchDescriptions = async (state: AppState): Promise<{ modelDesc: string; garmentDesc: string; hasShoes: boolean; garmentCategory: string }> => {
+  if (!import.meta.env.VITE_API_KEY) return { modelDesc: "", garmentDesc: "", hasShoes: false, garmentCategory: "other" };
+
+  try {
+    const garmentParts = await Promise.all(state.garmentFiles.map(async (file) => {
+      const processed = await processImageForGemini(file);
+      return { inlineData: { data: processed.data, mimeType: processed.mimeType } };
+    }));
+
+    let modelData = null;
+    if (state.modelSource === 'upload' && state.modelFile) {
+      modelData = await processImageForGemini(state.modelFile);
+    } else if (state.modelSource === 'builtin' && state.builtInModelId) {
+      const model = BUILT_IN_MODELS.find(m => m.id === state.builtInModelId);
+      if (model) modelData = await processImageForGemini(model.url);
+    }
+
+    return await extractBatchDescriptions(import.meta.env.VITE_API_KEY, modelData, garmentParts);
+  } catch (err) {
+    console.warn("Failed to get batch descriptions", err);
+    return { modelDesc: "", garmentDesc: "", hasShoes: false, garmentCategory: "other" };
+  }
+};
+
 export const generateFashionImage = async (
   poseId: string,
   state: AppState,
-  consistencyPrompt: string = ""
+  consistencyPrompt: string = "",
+  extractedGarmentDesc: string = "",
+  extractedModelDesc: string = ""
 ): Promise<string> => {
   if (!import.meta.env.VITE_API_KEY) throw new Error("API Key not found");
 
@@ -429,18 +508,30 @@ export const generateFashionImage = async (
 
     const textPrompt = `
         Role: Senior Fashion Photographer & High-End Retoucher.
-        Task: Generate a hyper-realistic fashion photograph with flawless compositing.
+        Task: Create a VIRTUAL TRY-ON fashion photograph with flawless compositing.
         
         INPUTS:
-        - Model: Preserve identity (face, skin, body type) from the model image provided. 
-          **CRITICAL**: DO NOT use the face from the garment image (it has been masked out). Use the explicit Model image.
-        - Garments: Maintain texture and details.
-        - Background: Match lighting to the background image.
+        - [--- MODEL REFERENCE IMAGE ---]: Provides the model's identity.
+        - [--- GARMENT REFERENCE IMAGE ---]: Provides the target garment.
+        - [--- BACKGROUND REFERENCE IMAGE ---]: Provides the environment.
 
         COMPOSITION:
         - Framing: ${framingInstruction}
         - Pose Name: ${selectedPose.title}
         - POSE DESCRIPTION (STRICTLY FOLLOW THIS): ${selectedPose.description}
+
+        GARMENT PRESERVATION (CRITICAL PRIORITY #1):
+        - You are performing VIRTUAL TRY-ON.
+        - You MUST NOT INVENT or CHANGE the garment. 
+        - The garment in the final image MUST BE AN EXACT 1:1 REPLICA of the GARMENT REFERENCE IMAGE.
+        - EXPLICIT GARMENT DETAILS TO EXACTLY REPLICATE: ${extractedGarmentDesc}
+        - Pay extreme attention to the pattern, cut, and details described above. 
+        - DO NOT create a "similar" dress. Create the EXACT dress provided.
+
+        MODEL / SUBJECT PRESERVATION:
+        - Preserve identity (face, skin, body type) from the MODEL REFERENCE IMAGE. 
+        - EXPLICIT MODEL DETAILS TO REPLICATE: ${extractedModelDesc}
+        - **CRITICAL**: DO NOT use the face from the garment image (it has been masked out). Use the explicit MODEL REFERENCE IMAGE.
 
         LIGHTING & INTEGRATION (CRITICAL):
         - LIGHTING MATCH: Analyze the background's light source (direction, temperature, softness) and apply the EXACT same lighting to the model's face and body.
@@ -459,7 +550,7 @@ export const generateFashionImage = async (
         ${consistencyPrompt}
         
         NEGATIVE PROMPT:
-        low quality, ugly, distorted face, floating limbs, pasted on, sticker look, grey box on face, blurred face, flat lighting, no shadows, mismatched lighting, chromatic aberration, cartoonish, bad composition.
+        changing the dress, altering the garment design, different dress, wrong dress, different pattern, low quality, ugly, distorted face, floating limbs, pasted on, sticker look, grey box on face, blurred face, flat lighting, no shadows, mismatched lighting, chromatic aberration, cartoonish, bad composition.
         
         ${additionalInstructions}
 
@@ -467,8 +558,22 @@ export const generateFashionImage = async (
         ${JSON.stringify(cameraSettings)}
       `;
 
-    const parts: any[] = [{ text: textPrompt }, modelPart, ...garmentParts];
-    if (bgPart) parts.push(bgPart);
+    const parts: any[] = [
+      { text: "--- MODEL REFERENCE IMAGE ---" },
+      modelPart
+    ];
+
+    for (let i = 0; i < garmentParts.length; i++) {
+      parts.push({ text: `--- GARMENT REFERENCE IMAGE ${i + 1} (VIRTUAL TRY-ON TARGET) ---` });
+      parts.push(garmentParts[i]);
+    }
+
+    if (bgPart) {
+      parts.push({ text: "--- BACKGROUND REFERENCE IMAGE ---" });
+      parts.push(bgPart);
+    }
+
+    parts.push({ text: textPrompt });
 
     const response = await ai.models.generateContent({
       model: 'gemini-3-pro-image-preview',
